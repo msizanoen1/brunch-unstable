@@ -2,6 +2,7 @@
 # - Enable ambient light sensor support
 # - Enable keyboard backlight
 # - Enable multiple batteries support
+# - Enable AC charge port detection
 # - Determine the default suspend mode (S0 / S3) according to /sys/power/mem_sleep default value
 # - Add "suspend_s0" and "suspend_s3" options to force suspend using S0 or S3 methods
 # - Add a more granular backlight management option "advanced_als" (based on pixel slate implementation)
@@ -32,6 +33,9 @@ if [ ! "$?" -eq 0 ]; then ret=$((ret + (2 ** 3))); fi
 
 echo 4 > /roota/usr/share/power_manager/board_specific/low_battery_shutdown_percent
 if [ ! "$?" -eq 0 ]; then ret=$((ret + (2 ** 4))); fi
+
+echo 1 > /roota/usr/share/power_manager/board_specific/has_barreljack
+if [ ! "$?" -eq 0 ]; then ret=$((ret + (2 ** 5))); fi
 
 if [ $(cat /sys/power/mem_sleep | cut -d' ' -f1) == '[s2idle]' ]; then
 	echo 1 > /roota/usr/share/power_manager/board_specific/suspend_to_idle
